@@ -46,10 +46,10 @@ export class EnvVariables {
   PRINT_ENV_EXAMPLE: boolean;
 
   @EnvDecorators.String({ required: true })
-  USER_COOKIE: string;
+  USER_COOKIE: string = 'session';
 
   @EnvDecorators.Int({ required: true })
-  COOKIE_MAX_AGE_MS: number;
+  COOKIE_MAX_AGE_MS: number = 1000_000;
 }
 
 export const envConfig = EnvDecorators.init(EnvVariables);

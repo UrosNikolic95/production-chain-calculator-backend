@@ -17,6 +17,7 @@ interface Recipe {
 }
 
 interface Task {
+  id: number;
   productionId: number;
   name: string;
   quantity: number;
@@ -34,17 +35,22 @@ interface ScheduledLine {
   tasks: Task[];
 }
 
+export interface CalculationTask {
+  id: number;
+  productionId: number;
+  name: string;
+  quantity: number;
+  startTime: number;
+  endTime: number;
+  dependsOnIds: number[];
+  requiredByIds: number[];
+}
+
 export interface CalculationResult {
   lines: {
     productionId: number;
     name: string;
-    tasks: {
-      productionId: number;
-      name: string;
-      quantity: number;
-      startTime: number;
-      endTime: number;
-    }[];
+    tasks: CalculationTask[];
   }[];
 }
 
@@ -92,17 +98,25 @@ export class CalculateService {
       }
     }
 
+    let nextTaskId = 0;
+    const newTask = (data: Omit<Task, 'id'>): Task => ({
+      id: nextTaskId++,
+      ...data,
+    });
+
     let currentTasks: Task[] = recipes.flatMap((r) => {
       const chunks: Task[] = [];
       let remaining = r.targetQuantity;
       while (remaining > 0) {
         const qty = Math.min(remaining, 5);
-        chunks.push({
-          productionId: r.productionId,
-          name: r.name,
-          quantity: qty,
-          time: (r.productionTime * qty) / r.productionQuantity,
-        });
+        chunks.push(
+          newTask({
+            productionId: r.productionId,
+            name: r.name,
+            quantity: qty,
+            time: (r.productionTime * qty) / r.productionQuantity,
+          }),
+        );
         remaining -= qty;
       }
       return chunks;
@@ -121,12 +135,14 @@ export class CalculateService {
         for (const rq of r.requirements) {
           const subRecipe = recipeById.get(rq.productionId);
           if (!subRecipe) continue;
-          subTasks.push({
-            productionId: rq.productionId,
-            name: subRecipe.name,
-            quantity: rq.quantity * iterations,
-            time: r.productionTime * iterations,
-          });
+          subTasks.push(
+            newTask({
+              productionId: rq.productionId,
+              name: subRecipe.name,
+              quantity: rq.quantity * iterations,
+              time: r.productionTime * iterations,
+            }),
+          );
         }
         t.dependsOn = subTasks;
         for (const sub of subTasks) {
@@ -175,11 +191,14 @@ export class CalculateService {
         productionId: l.productionId,
         name: l.name,
         tasks: l.tasks.map((t) => ({
+          id: t.id,
           productionId: t.productionId,
           name: t.name,
           quantity: t.quantity,
           startTime: t.startTime ?? 0,
           endTime: t.endTime ?? 0,
+          dependsOnIds: (t.dependsOn ?? []).map((d) => d.id),
+          requiredByIds: (t.requiredBy ?? []).map((d) => d.id),
         })),
       })),
     };
