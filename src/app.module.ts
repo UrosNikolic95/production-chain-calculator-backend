@@ -11,6 +11,7 @@ import { ConsumptionEntity } from './entities/consumption.entity';
 import { ProductionModule } from './modules/production/production.module';
 import { ConsumptionModule } from './modules/consumption/consumption.module';
 import { CalculateModule } from './modules/calculate/calculate.module';
+import { WorkspaceModule } from './modules/workspace/workspace.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CalculateModule } from './modules/calculate/calculate.module';
     ProductionModule,
     ConsumptionModule,
     CalculateModule,
+    WorkspaceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

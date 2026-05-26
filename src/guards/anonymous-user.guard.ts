@@ -26,9 +26,20 @@ export class AnonymousUserGuard implements CanActivate {
       });
     }
 
-    let workspace = await WorkspaceEntity.findOne({
-      where: { userId: user.id },
-    });
+    const activeId = Number(
+      req.cookies?.[envConfig.ACTIVE_WORKSPACE_COOKIE] as string | undefined,
+    );
+    let workspace = activeId
+      ? await WorkspaceEntity.findOne({
+          where: { id: activeId, userId: user.id },
+        })
+      : null;
+    if (!workspace) {
+      workspace = await WorkspaceEntity.findOne({
+        where: { userId: user.id },
+        order: { id: 'ASC' },
+      });
+    }
     if (!workspace) {
       workspace = await seedTankProductionChain(user.id);
     }

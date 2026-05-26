@@ -48,6 +48,9 @@ export class EnvVariables {
   @EnvDecorators.String({ required: true })
   USER_COOKIE: string = 'session';
 
+  @EnvDecorators.String({ required: true })
+  ACTIVE_WORKSPACE_COOKIE: string = 'active_workspace';
+
   @EnvDecorators.Int({ required: true })
   COOKIE_MAX_AGE_MS: number = 1000_000;
 }
