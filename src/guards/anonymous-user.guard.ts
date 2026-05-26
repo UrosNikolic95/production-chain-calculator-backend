@@ -5,6 +5,7 @@ import { UserEntity } from '../entities/user.entity';
 import { WorkspaceEntity } from '../entities/workspace.entity';
 import { envConfig } from '../env';
 import { ExtendedRequest } from '../interfaces/extended-request.interface';
+import { seedTankProductionChain } from '../seed/tank-production-chain.seed';
 
 @Injectable()
 export class AnonymousUserGuard implements CanActivate {
@@ -29,8 +30,7 @@ export class AnonymousUserGuard implements CanActivate {
       where: { userId: user.id },
     });
     if (!workspace) {
-      workspace = WorkspaceEntity.create({ userId: user.id });
-      await workspace.save();
+      workspace = await seedTankProductionChain(user.id);
     }
 
     req.user = user;
