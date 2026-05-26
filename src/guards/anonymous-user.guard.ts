@@ -22,7 +22,6 @@ export class AnonymousUserGuard implements CanActivate {
       res.cookie(envConfig.USER_COOKIE, user.token, {
         httpOnly: true,
         sameSite: 'lax',
-        maxAge: envConfig.COOKIE_MAX_AGE_MS,
       });
     }
 
