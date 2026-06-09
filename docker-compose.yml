@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-production-change}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-abc}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-production-change}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: ${BACKEND_PORT:-3000}
+      POSTGRES_DB: ${POSTGRES_DB:-production-change}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-abc}
+      SYNCHRONIZE_DB: ${SYNCHRONIZE_DB:-true}
+      RUN_MIGRATIONS_DB: ${RUN_MIGRATIONS_DB:-false}
+      USER_COOKIE: ${USER_COOKIE:-session}
+      ACTIVE_WORKSPACE_COOKIE: ${ACTIVE_WORKSPACE_COOKIE:-active_workspace}
+      COOKIE_MAX_AGE_MS: ${COOKIE_MAX_AGE_MS:-1000000}
+    ports:
+      - "${BACKEND_PORT:-3000}:${BACKEND_PORT:-3000}"
+
+volumes:
+  pgdata:

@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { envConfig } from './env';
 import { SnakeNamingStrategy } from './snake-naming.strategy';
@@ -34,7 +32,7 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
     CalculateModule,
     WorkspaceModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

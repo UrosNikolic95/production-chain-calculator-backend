@@ -27,7 +27,7 @@ export class BodyDecorators {
     required = false,
     isArray = false,
     defaultValue,
-    minimun,
+    minimum: minimun,
     maximum,
   }: DecoratorOptions = {}) {
     const decorators: PropertyDecorator[] = [
@@ -51,7 +51,7 @@ export class BodyDecorators {
     required = false,
     isArray = false,
     defaultValue,
-    minimun,
+    minimum: minimun,
     maximum,
     numOpt = {},
   }: DecoratorOptions = {}) {

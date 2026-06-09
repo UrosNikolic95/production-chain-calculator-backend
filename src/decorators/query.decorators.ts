@@ -26,7 +26,7 @@ export class QueryDecorators {
     required = false,
     isArray = false,
     defaultValue,
-    minimun,
+    minimum,
     maximum,
   }: DecoratorOptions = queryOptionsDefault) {
     const decorators: PropertyDecorator[] = [
@@ -35,14 +35,14 @@ export class QueryDecorators {
         type: Number,
         isArray: isArray,
         default: defaultValue,
-        minimum: minimun,
+        minimum: minimum,
         maximum: maximum,
       }),
       required ? IsDefined() : IsOptional(),
       IsInt({ each: isArray }),
       Type(() => Number),
     ];
-    if (minimun) decorators.push(Min(minimun));
+    if (minimum) decorators.push(Min(minimum));
     if (maximum) decorators.push(Max(maximum));
     return applyDecorators(...decorators);
   }
@@ -51,7 +51,7 @@ export class QueryDecorators {
     required = false,
     isArray = false,
     defaultValue,
-    minimun,
+    minimum,
     maximum,
     numOpt = {},
   }: DecoratorOptions = queryOptionsDefault) {
@@ -61,14 +61,14 @@ export class QueryDecorators {
         type: Number,
         isArray: isArray,
         default: defaultValue,
-        minimum: minimun,
+        minimum: minimum,
         maximum: maximum,
       }),
       required ? IsDefined() : IsOptional(),
       IsNumber(numOpt, { each: isArray }),
       Type(() => Number),
     ];
-    if (minimun) decorators.push(Min(minimun));
+    if (minimum) decorators.push(Min(minimum));
     if (maximum) decorators.push(Max(maximum));
     return applyDecorators(...decorators);
   }

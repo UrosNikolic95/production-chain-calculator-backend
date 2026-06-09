@@ -17,7 +17,7 @@ export interface DecoratorOptions {
   numOpt?: IsNumberOptions;
   enumType?: any;
   defaultValue?: any;
-  minimun?: number;
+  minimum?: number;
   maximum?: number;
 }
 
